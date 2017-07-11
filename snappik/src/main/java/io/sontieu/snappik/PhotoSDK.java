@@ -27,7 +27,7 @@ public class PhotoSDK {
     }
 
     public static void setBrightnessContrast(long matSrcAddr, long matDstAddr, double contrast, int brightness) {
-
+        nativeContrastBrightness(matSrcAddr, matDstAddr, contrast, brightness);
     }
 
     /**
@@ -35,17 +35,17 @@ public class PhotoSDK {
      * Method from native-opencv
      */
     @SuppressWarnings({"JniMissingFunction"})
-    public static native String nativeAbiInfo();
+    private static native String nativeAbiInfo();
     @SuppressWarnings({"JniMissingFunction"})
-    public static native String nativeStringFromJNI();
+    private static native String nativeStringFromJNI();
     @SuppressWarnings({"JniMissingFunction"})
-    public static native void nativeSalt(long matAddr, int nElem);
+    private static native void nativeSalt(long matAddr, int nElem);
     @SuppressWarnings({"JniMissingFunction"})
-    public static native void nativeRotate(long matSrcAddr, long matDstAddr
+    private static native void nativeRotate(long matSrcAddr, long matDstAddr
             , int centerX, int centerY
             , double angle, double scale);
     @SuppressWarnings({"JniMissingFunction"})
-    public static native void nativeCrop(long matSrcAddr, long matDstAddr, int x, int y, int width, int height);
+    private static native void nativeCrop(long matSrcAddr, long matDstAddr, int x, int y, int width, int height);
     @SuppressWarnings({"JniMissingFunction"})
-    public static native void nativeContrastBrightness(long matSrcAddr, long matDstAddr, double contrast, int brightness);
+    private static native void nativeContrastBrightness(long matSrcAddr, long matDstAddr, double contrast, int brightness);
 }

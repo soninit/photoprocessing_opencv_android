@@ -45,6 +45,7 @@ public class CropActivity extends AppCompatActivity {
         Mat matDst = new Mat(matOri.rows(), matOri.cols(), matOri.type());
 
         Timber.d("Mat src: %d %d", matDst.rows(), matDst.cols());
+        Timber.d("MatDst address: %d", matDst.getNativeObjAddr());
 
         PhotoSDK.crop(matOri.getNativeObjAddr(), matDst.getNativeObjAddr(), 0, 0, 650, 650);
         Bitmap bmCrop = Bitmap.createBitmap(matDst.width(), matDst.height(), Bitmap.Config.ARGB_8888);

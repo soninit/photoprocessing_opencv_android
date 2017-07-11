@@ -41,3 +41,5 @@ snappik/src/main/obj/
 snappik/src/main/res/drawable/
 src/androidTest/java/io/
 src/test/java/io/
+/openCVLibrary320/build/
+/.idea/

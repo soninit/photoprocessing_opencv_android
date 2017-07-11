@@ -69,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void testLoadBitmap() {
-//        PhotoSDK.salt(matOri.getNativeObjAddr(), bmOri.getWidth() * bmOri.getHeight());
         Bitmap bmSalt = Bitmap.createBitmap(matOri.width(), matOri.height(), Bitmap.Config.ARGB_8888);
         Utils.matToBitmap(matOri, bmSalt);
 

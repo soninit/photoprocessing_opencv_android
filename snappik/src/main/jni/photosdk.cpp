@@ -33,7 +33,6 @@ Java_io_sontieu_snappik_PhotoSDK_nativeAbiInfo(
     JNIEnv* env
     , jobject thiz )
 {
-    LOGI("Native ABI info called");
     #if defined(__arm__)
         #if defined(__ARM_ARCH_7A__)
         #if defined(__ARM_NEON__)
@@ -113,6 +112,7 @@ Java_io_sontieu_snappik_PhotoSDK_nativeCrop(JNIEnv *env, jobject instance,
                                                     , jint x, jint y
                                                     , jint width, jint height) {
     LOGI("Crop params: x: %d, y: %d, width: %d, height: %d", x, y, width, height);
+    LOGI("Matsrc: %ld, MatDst: %ld", matSrcAddr, matDstAddr);
 
     Mat &matSrc = *(Mat*) matSrcAddr;
     Mat &matDst = *(Mat*) matDstAddr;
@@ -127,5 +127,28 @@ Java_io_sontieu_snappik_PhotoSDK_nativeCrop(JNIEnv *env, jobject instance,
     // Mat matResult = matSrc(roi);
     // matResult.copyTo(matDst);
     matDst = matSrc(roi);
+}
+
+extern "C"
+void JNICALL
+Java_io_sontieu_snappik_PhotoSDK_nativeContrastBrightness(JNIEnv *env, jobject instance,jlong matSrcAddr, jlong matDstAddr,jdouble contrast, jint brightness) {
+    LOGI("Contrast Brightness params: contrast: %lf, brightness: %d", contrast, brightness);
+
+
+    Mat &matSrc = *(Mat*) matSrcAddr;
+    Mat &matDst = *(Mat*) matDstAddr;
+
+
+    LOGI("MatSrc: %d x %d, MatDst: %d x %d\n, matDst: %ld, matSrc: %ld", matSrc.cols, matSrc.rows
+                , matDst.cols, matDst.rows, matDstAddr, matSrcAddr);
+
+    for (int y = 0; y < matSrc.rows; y++) {
+            for (int x = 0; x < matSrc.cols; x++) {
+                for (int c = 0; c < 3; c++) {
+                    // matDst.at<Vec3b>(y, x)[c] = saturate_cast<uchar>(contrast * (matSrc.at<Vec3b>(y, x)[c]) + brightness);
+                    matDst.at<Vec3b>(y, x)[c] = 255;
+                }
+            }
+    }
 }
 
