@@ -17,6 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".CropActivity" />
+        <activity android:name=".RotateActivity" />
+        <activity android:name=".ContrastBrightnessActivity"></activity>
     </application>
 
 </manifest>

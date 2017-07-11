@@ -1,18 +1,16 @@
 package mobi.devteam.opencvexamples;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
@@ -21,6 +19,8 @@ import org.opencv.core.Mat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sontieu.snappik.PhotoSDK;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,67 +31,86 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e("MainActivity", "OpenCV loaded");
             System.loadLibrary("opencv_java3");
-            System.loadLibrary("native-opencv");
+            System.loadLibrary("native-snappik");
         }
     }
 
+    @BindView(R.id.rlMainContent)
+    RelativeLayout rlMainContent;
     @BindView(R.id.iv)
     ImageView iv;
-    @BindView(R.id.tv)
-    TextView tv;
-    @BindView(R.id.mainContent)
-    RelativeLayout rlMainContent;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private Bitmap bmOri;
+    private Mat matOri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        Timber.tag(TAG);
 
-        // Example of a call to a native method
-        tv.setText("ABI: " + abiInfo());
+        Timber.d("Device cpu: %s", PhotoSDK.abiInfo());
 
-        Bitmap bMap= BitmapFactory.decodeResource(getResources(),R.drawable.demo);
-//        javaLoadAndShow(bMap);
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-        GreyScaleView scaleView = new GreyScaleView(this, 400, 400);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT
-                , RelativeLayout.LayoutParams.MATCH_PARENT);
-
-        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        scaleView.setLayoutParams(params);
-
-        scaleView.setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
-        rlMainContent.addView(scaleView);
-
-    }
-
-    protected void javaLoadAndShow(Bitmap bMap) {
-        Mat iMat = new Mat(bMap.getHeight(), bMap.getWidth(), CvType.CV_8UC1);
-        //             iMat = Utils.loadResource(this, R.drawable.demo, CvType.CV_8UC4);
-        Utils.bitmapToMat(bMap, iMat);
+        bmOri = BitmapFactory.decodeResource(getResources(), R.drawable.lena, bmOptions);
+        Log.d(TAG, "bmOri: " + bmOri.getWidth() + " x " + bmOri.getHeight());
 
 
-        Bitmap b = Bitmap.createBitmap(iMat.width(), iMat.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(iMat, b, false);
-        Log.e("MainActivity", "iMat "  + (iMat == null ? "null" : "not null"));
+        matOri = new Mat(bmOri.getHeight(), bmOri.getWidth(), CvType.CV_8UC4);
+        Utils.bitmapToMat(bmOri, matOri);
 
-        iv.setImageBitmap(b);
-    }
-
-    protected void nativeLoadGreyScale(Bitmap bMap) {
-
+        testLoadBitmap();
     }
 
 
-    /**
-     *
-     * Method from native-opencv
-     */
-    @SuppressWarnings({"JniMissingFunction"})
-    public native String abiInfo();
-    @SuppressWarnings({"JniMissingFunction"})
-    public native String stringFromJNI();
+
+    private void testLoadBitmap() {
+//        PhotoSDK.salt(matOri.getNativeObjAddr(), bmOri.getWidth() * bmOri.getHeight());
+        Bitmap bmSalt = Bitmap.createBitmap(matOri.width(), matOri.height(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(matOri, bmSalt);
+
+        iv.setImageBitmap(bmSalt);
+
+        Log.e(TAG, String.format("bmOri: %d * %d, mat: %d * %d", bmOri.getWidth(), bmOri.getHeight(),
+                matOri.width(), matOri.height()));
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuCrop:
+                Intent iCrop = new Intent(this, CropActivity.class);
+                iCrop.putExtra("matAddr", matOri.getNativeObjAddr());
+                startActivity(iCrop);
+                break;
+            case R.id.menuRotate:
+                Intent iRotate = new Intent(this, RotateActivity.class);
+                iRotate.putExtra("matAddr", matOri.getNativeObjAddr());
+                startActivity(iRotate);
+                break;
+            case R.id.menuContrast:
+                Intent iContrast = new Intent(this, ContrastBrightnessActivity.class);
+                iContrast.putExtra("matAddr", matOri.getNativeObjAddr());
+                startActivity(iContrast);
+                break;
+        }
+
+
+
+        return true;
+    }
 }
