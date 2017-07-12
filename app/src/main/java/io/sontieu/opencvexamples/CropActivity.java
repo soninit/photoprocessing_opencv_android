@@ -1,4 +1,4 @@
-package mobi.devteam.opencvexamples;
+package io.sontieu.opencvexamples;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;

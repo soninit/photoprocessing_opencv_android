@@ -1,4 +1,4 @@
-package mobi.devteam.opencvexamples;
+package io.sontieu.opencvexamples;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -60,22 +60,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "bmOri: " + bmOri.getWidth() + " x " + bmOri.getHeight());
 
 
-        matOri = new Mat(bmOri.getHeight(), bmOri.getWidth(), CvType.CV_8UC4);
+        matOri = new Mat();
         Utils.bitmapToMat(bmOri, matOri);
-
-        testLoadBitmap();
-    }
-
-
-
-    private void testLoadBitmap() {
-        Bitmap bmSalt = Bitmap.createBitmap(matOri.width(), matOri.height(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(matOri, bmSalt);
-
-        iv.setImageBitmap(bmSalt);
-
-        Log.e(TAG, String.format("bmOri: %d * %d, mat: %d * %d", bmOri.getWidth(), bmOri.getHeight(),
-                matOri.width(), matOri.height()));
+        iv.setImageBitmap(bmOri);
     }
 
 

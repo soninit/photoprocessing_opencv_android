@@ -1,4 +1,4 @@
-package mobi.devteam.opencvexamples;
+package io.sontieu.opencvexamples;
 
 import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +26,7 @@ public class ContrastBrightnessActivity extends AppCompatActivity implements See
     Mat matOri;
     Mat matDst;
     double contrast = 2.0f;
-    int brightness = 50;
+    int brightness = 20;
     Bitmap bm;
 
     @Override
@@ -37,7 +37,8 @@ public class ContrastBrightnessActivity extends AppCompatActivity implements See
 
         Timber.tag(ContrastBrightnessActivity.class.getSimpleName());
         matOri = new Mat(getIntent().getLongExtra("matAddr", 0));
-        matDst = new Mat(matOri.rows(), matOri.cols(), matOri.type());
+        matDst = new Mat();
+        matOri.copyTo(matDst);
 
         skContrast.setProgress(50);
         skBrightness.setProgress(50);
@@ -53,7 +54,7 @@ public class ContrastBrightnessActivity extends AppCompatActivity implements See
         Timber.d("After: matSrc: %d, matDst: %d", matOri.getNativeObjAddr(), matDst.getNativeObjAddr());
 
         bm = Bitmap.createBitmap(matOri.width(), matOri.height(), Bitmap.Config.ARGB_8888);
-        Utils.bitmapToMat(bm, matDst);
+        Utils.matToBitmap(matDst, bm);
         iv.setImageBitmap(bm);
     }
 
